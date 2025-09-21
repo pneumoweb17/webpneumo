@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNEUMOweb - Screening Results</title>
+    <link rel="stylesheet" href="result.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <nav class="navigation">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="pages.html?page=background" class="nav-link">Background</a>
+                <a href="pages.html?page=faq" class="nav-link">FAQ</a>
+                <a href="pages.html?page=feedback" class="nav-link">FEEDBACK</a>
+            </nav>
+            <div class="language-toggle">
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="fil">Filipino</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Title Section -->
+        <section class="title-section">
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="logo.png" alt="PNEUMOweb Logo" class="logo-img">
+                </div>
+            </div>
+            <div class="title-content">
+                <h1 class="main-title">PNEUMOweb</h1>
+                <p class="subtitle">Web-based pneumonia screening system</p>
+            </div>
+        </section>
+
+        <!-- Body Section -->
+        <section class="body-section">
+            <div class="result-container">
+                <!-- Left Half - Results Summary -->
+                <div class="left-half">
+                    <div class="risk-header">
+                        <div class="print-risk-header">
+                            <span id="print-risk-level"></span>
+                        </div>
+                        <div class="gauge">
+                            <div class="gauge-needle" id="gaugeNeedle"></div>
+                            <span class="gauge-label gauge-label-low">LOW</span>
+                            <span class="gauge-label gauge-label-mid">MID</span>
+                            <span class="gauge-label gauge-label-high">HIGH</span>
+                        </div>
+                        <div class="risk-bottom">
+                            <h2>Risk Level</h2>
+                            <div class="advice-box">
+                                <p id="advice-text">Your advice here</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="steps-box">
+                            <p id="steps-text"></p>
+                    </div>
+
+                    <div class="questions-list">
+                        <div class="question-item">
+                            <span class="question-number">1.</span>
+                            <span class="question-text">How old are you?</span>
+                            <span class="answer-text" id="answer-age"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">2.</span>
+                            <span class="question-text">What is your sex/gender?</span>
+                            <span class="answer-text" id="answer-gender"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">3.</span>
+                            <span class="question-text">How many days have you been feeling unwell?</span>
+                            <span class="answer-text" id="answer-unwell-days"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">4.</span>
+                            <span class="question-text">Do you have a cough?</span>
+                            <span class="answer-text" id="answer-cough"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">5.</span>
+                            <span class="question-text">How long have you had this cough?</span>
+                            <span class="answer-text" id="answer-cough-duration"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">6.</span>
+                            <span class="question-text">Are you coughing up phlegm or thick mucus?</span>
+                            <span class="answer-text" id="answer-phlegm"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">7.</span>
+                            <span class="question-text">Do you have a fever?</span>
+                            <span class="answer-text" id="answer-fever"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">8.</span>
+                            <span class="question-text">Have you experienced chills or sweating?</span>
+                            <span class="answer-text" id="answer-chills"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">9.</span>
+                            <span class="question-text">Are you having difficulty breathing or do you feel short of breath?</span>
+                            <span class="answer-text" id="answer-breathing-difficulty"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">10.</span>
+                            <span class="question-text">Do you have chest pain when breathing deeply or coughing?</span>
+                            <span class="answer-text" id="answer-chest-pain"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">11.</span>
+                            <span class="question-text">Is your breathing faster than usual?</span>
+                            <span class="answer-text" id="answer-fast-breathing"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">12.</span>
+                            <span class="question-text">Do you feel weak or extremely tired?</span>
+                            <span class="answer-text" id="answer-weakness"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">13.</span>
+                            <span class="question-text">Have you lost your appetite in the past few days?</span>
+                            <span class="answer-text" id="answer-appetite-loss"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">14.</span>
+                            <span class="question-text">Have you experienced nausea or dizziness?</span>
+                            <span class="answer-text" id="answer-nausea"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">15.</span>
+                            <span class="question-text">Is the child feeding poorly or refusing food/milk?</span>
+                            <span class="answer-text" id="answer-child-feeding"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">16.</span>
+                            <span class="question-text">Is the child breathing rapidly or does the chest pull inward when breathing?</span>
+                            <span class="answer-text" id="answer-child-breathing"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">17.</span>
+                            <span class="question-text">Have you recently been sick with flu, colds, or any respiratory illness?</span>
+                            <span class="answer-text" id="answer-recent-illness"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">18.</span>
+                            <span class="question-text">Do you smoke or live with someone who smokes?</span>
+                            <span class="answer-text" id="answer-smoking"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">19.</span>
+                            <span class="question-text">Have you been vaccinated against pneumonia (such as PCV or flu vaccine)?</span>
+                            <span class="answer-text" id="answer-vaccination"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">20.</span>
+                            <span class="question-text">Do you have any chronic illnesses (asthma, heart disease, diabetes, weak immune system, or malnutrition)?</span>
+                            <span class="answer-text" id="answer-chronic-illness"></span>
+                        </div>
+                        <div class="question-item">
+                            <span class="question-number">21.</span>
+                            <span class="question-text">Do you have fast breathing for your age? (Parents can count breaths for 1 minute. 2–11 months: ≥50/min, 12–59 months: ≥40/min, ≥5 years/adults: ≥30/min (approx.))</span>
+                            <span class="answer-text" id="answer-fast-breathing-age"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="action-buttons-vertical">
+                    <!-- Print Button -->
+                    <button id="print-button" class="icon-btn" onclick="printLeftHalf()">
+                        <span class="btn-icon"><i class="fas fa-print"></i></span>
+                        Print
+                    </button>
+
+                    <!-- File Attachment Button -->
+                    <button class="file-btn icon-btn" onclick="document.getElementById('file-input').click();">
+                        <span class="btn-icon"><i class="fas fa-file-upload"></i></span>
+                        Attach file with the result (Optional)
+                    </button>
+                    <input type="file" id="file-input" accept="*/*" style="display: none;" onchange="handleFileAttachment(event)">
+                    <div class="attached-file" id="attached-file" style="display: none;">
+                        <span id="file-name"></span>
+                        <button onclick="removeFile()" class="remove-file-btn">×</button>
+                    </div>
+
+                    <!-- Save Button -->
+                    <button class="save-btn icon-btn" onclick="saveResultLocally()">
+                        <span class="btn-icon"><i class="fas fa-save"></i></span>
+                        Save Result to local storage
+                    </button>
+
+                    <!-- Exit Button -->
+                    <button class="exit-btn icon-btn" onclick="exitResult()">
+                        <span class="btn-icon"><i class="fas fa-sign-out-alt"></i></span>
+                        Exit
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="disclaimer-box">
+                <strong>Disclaimer:</strong>
+                This screening tool is for informational purposes only and does not replace professional medical advice. Any information gathered are kept confidential.
+            </div>
+            <div class="footer-background-placeholder">
+                <!-- Footer background image will be placed here -->
+            </div>
+        </footer>
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div id="exit-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p id="exit-message">Do you want to leave without saving your result?</p>
+            <div class="modal-buttons">
+                <button onclick="confirmExit()" class="modal-btn confirm">Yes</button>
+                <button onclick="cancelExit()" class="modal-btn cancel">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendingNavigationUrl = null;
+        let screeningAnswers = {};
+        let attachedFile = null;
+        let riskLevel = 'Low';
+        let adviceText = '';
+        let stepsText = '';
+        let resultSaved = false;
+
+        function normalizeAnswer(ans) {
+            if (!ans) return ans;
+            ans = ans.toLowerCase().trim();
+            if (ans === "yes" || ans === "oo") return "Yes";
+            if (ans === "no" || ans === "hindi") return "No";
+            return ans; // for things like numbers, gender, etc.
+        }
+
+
+        // 2. Helper Functions
+function isYes(val) {
+    return val && (val.toLowerCase() === "yes" || val.toLowerCase() === "oo");
+}
+function isNo(val) {
+    return val && (val.toLowerCase() === "no" || val.toLowerCase() === "hindi");
+}
+function isNotSure(val) {
+    return val && (val.toLowerCase() === "not sure" || val.toLowerCase() === "hindi sigurado");
+}
+function getAge() {
+    const age = parseInt(screeningAnswers.age, 10);
+    return isNaN(age) ? 0 : age;
+}
+
+console.log("screeningAnswers:", screeningAnswers);
+Object.keys(screeningAnswers).forEach(key => {
+    console.log(key, "=", screeningAnswers[key]);
+});
+
+// 3. Main Risk Calculation Logic
+function calculateRisk() {
+    const age = getAge();
+
+    // Normalize answers for all questions
+    const ans = {};
+    [
+        "age", "gender", "unwell_days", "cough", "cough_duration", "phlegm", "fever", "chills",
+        "breathing_difficulty", "chest_pain", "fast_breathing", "weakness", "appetite_loss", "nausea",
+        "child_feeding", "child_breathing", "recent_illness", "smoking", "vaccination", "chronic-illness", "fast-breathing-age"
+    ].forEach(key => ans[key] = normalizeAnswer(screeningAnswers[key]));
+
+    // Level C (hard danger signs): Q9, Q16, Q21
+    if (
+        isYes(ans.breathing_difficulty) || // Q9
+        isYes(ans.child_breathing) ||      // Q16
+        isYes(ans["fast-breathing-age"])   // Q21
+    ) {
+        riskLevel = 'High Rate';
+        adviceText = 'You are showing signs of pneumonia. Seek medical attention immediately.';
+        stepsText = translations[document.getElementById("languageSelect").value].steps.high;
+        return { riskLevel, adviceText, stepsText };
+    }
+
+    // Score calculation
+    let score = 0;
+    // Q4 cough
+    if (isYes(ans.cough)) score += 1;
+    // Q7 fever
+    if (isYes(ans.fever)) score += 1;
+    // Q8 chills/sweats
+    if (isYes(ans.chills)) score += 1;
+    // Q5 cough duration
+    if (ans.cough_duration === "3-7 days" || ans.cough_duration === "3-7 araw") score += 1;
+    if (ans.cough_duration === "More than a week" || ans.cough_duration === "Higit sa isang linggo") score += 2;
+    // Q6 productive cough
+    if (isYes(ans.phlegm)) score += 1;
+    // Q12 weakness/fatigue
+    if (isYes(ans.weakness)) score += 1;
+    // Q13 loss of appetite
+    if (isYes(ans.appetite_loss)) score += 1;
+    // Q14 vomiting/dizziness
+    if (isYes(ans.nausea)) score += 1;
+    // Q15 poor feeding (child)
+    if (isYes(ans.child_feeding)) score += 2;
+    // Q11 feels breathing faster (subjective)
+    if (isYes(ans.fast_breathing)) score += 1;
+    // Q10 chest pain with breathing/coughing (soft danger sign)
+    if (isYes(ans.chest_pain)) score += 2;
+    // Q18 smoker/exposed
+    if (isYes(ans.smoking)) score += 1;
+    // Q20 chronic comorbidity
+    if (isYes(ans["chronic-illness"])) score += 2;
+    // Q17 recent respiratory illness
+    if (isYes(ans.recent_illness)) score += 1;
+    // Q19 vaccination unknown
+    if (isNotSure(ans.vaccination)) score += 1;
+
+    // SOFT-DANGER confirmation: Q10 or Q11 = Yes but score <4 and no cough/fever → Moderate
+    let softDanger = false;
+    // SOFT-DANGER confirmation: Q10 or Q11 = Yes but score <4 and no cough/fever → Moderate
+    if (
+        (isYes(ans.chest_pain) || isYes(ans.fast_breathing)) &&
+        score < 4 &&
+        !isYes(ans.cough) && !isYes(ans.fever)
+    ) {
+        riskLevel = 'Moderate Rate';
+        adviceText = 'You may have symptoms of pneumonia. Please consult a health worker soon.';
+
+        // Add extra advice if only Q10 or only Q11 is Yes
+        const onlyChestPain = isYes(ans.chest_pain) && !isYes(ans.fast_breathing);
+        const onlyFastBreathing = !isYes(ans.chest_pain) && isYes(ans.fast_breathing);
+        if (onlyChestPain || onlyFastBreathing) {
+            adviceText += ' Chest pain or fast breathing can have other causes; see clinician for evaluation.';
+        }
+
+        stepsText = translations[document.getElementById("languageSelect").value].steps.moderate;
+        return { riskLevel, adviceText, stepsText };
+    }
+
+    // Comorbidity shortcut: Q20 = Yes and any breathing symptom (Q9/Q11/Q16/Q21/Q10) → High
+    if (
+        isYes(ans["chronic-illness"]) &&
+        (
+            isYes(ans.breathing_difficulty) || // Q9
+            isYes(ans.fast_breathing) ||       // Q11
+            isYes(ans.child_breathing) ||      // Q16
+            isYes(ans["fast-breathing-age"]) ||// Q21
+            isYes(ans.chest_pain)              // Q10
+        )
+    ) {
+        riskLevel = 'High Rate';
+        adviceText = 'You are showing signs of pneumonia. Seek medical attention immediately.';
+        stepsText = translations[document.getElementById("languageSelect").value].steps.high;
+        return { riskLevel, adviceText, stepsText };
+    }
+
+    // Map score to risk
+// ...inside calculateRisk(), after comorbidity shortcut and before child adjustment...
+    if (score === 0) {
+        riskLevel = 'No Rate';
+        adviceText = 'No concerning symptoms. No action required beyond usual care. Re-evaluate if new symptoms appear.';
+        stepsText = translations[document.getElementById("languageSelect").value].steps.no;
+    } else if (score >= 1 && score <= 3) {
+        riskLevel = 'Low Rate';
+        adviceText = 'You currently have a low risk of pneumonia. Monitor your symptoms.';
+        stepsText = translations[document.getElementById("languageSelect").value].steps.low;
+    } else if (score >= 4 && score <= 6) {
+        riskLevel = 'Moderate Rate';
+        adviceText = 'You may have symptoms of pneumonia. Please consult a health worker soon.';
+
+        // Add extra advice if only Q10 or only Q11 is Yes
+        const onlyChestPain = isYes(ans.chest_pain) && !isYes(ans.fast_breathing);
+        const onlyFastBreathing = !isYes(ans.chest_pain) && isYes(ans.fast_breathing);
+        if (onlyChestPain || onlyFastBreathing) {
+            adviceText += ' Chest pain or fast breathing can have other causes; see clinician for evaluation.';
+        }
+
+        stepsText = translations[document.getElementById("languageSelect").value].steps.moderate;
+    } else if (score >= 7) {
+        riskLevel = 'High Rate';
+        adviceText = 'You are showing signs of pneumonia. Seek medical attention immediately.';
+        stepsText = translations[document.getElementById("languageSelect").value].steps.high;
+    }
+
+    // Child adjustment: if age <5 and (Q4 or Q7) = Yes → bump risk one level up
+    if (age < 5 && (isYes(ans.cough) || isYes(ans.fever)) && riskLevel !== 'High Rate') {
+        if (riskLevel === 'Low Rate') {
+            riskLevel = 'Moderate Rate';
+            adviceText = 'You may have symptoms of pneumonia. Please consult a health worker soon.';
+            stepsText = translations[document.getElementById("languageSelect").value].steps.moderate;
+        } else if (riskLevel === 'Moderate Rate') {
+            riskLevel = 'High Rate';
+            adviceText = 'You are showing signs of pneumonia. Seek medical attention immediately.';
+            stepsText = translations[document.getElementById("languageSelect").value].steps.high;
+        }
+    }
+    return { riskLevel, adviceText, stepsText };
+}
+function displayResults() {
+    const result = calculateRisk();
+
+    // Set risk key for translation
+    let riskKey = "no";
+    if (result.riskLevel === "Low Rate") riskKey = "low";
+    else if (result.riskLevel === "Moderate Rate") riskKey = "moderate";
+    else if (result.riskLevel === "High Rate") riskKey = "high";
+
+    const lang = document.getElementById("languageSelect").value;
+
+    // Update risk level display
+    document.getElementById('print-risk-level').textContent =
+        result.riskLevel === "High Rate" ? "HIGH RISK" :
+        result.riskLevel === "Moderate Rate" ? "MODERATE RISK" :
+        result.riskLevel === "Low Rate" ? "LOW RISK" : "";
+
+    // --- Set advice box color ---
+    const adviceBox = document.querySelector('.advice-box');
+    adviceBox.classList.remove('low', 'moderate', 'high');
+    if (result.riskLevel === "High Rate") adviceBox.classList.add('high');
+    else if (result.riskLevel === "Moderate Rate") adviceBox.classList.add('moderate');
+    else adviceBox.classList.add('low');
+    // ----------------------------
+
+    // Prepare advice text in the selected language
+    let advice = translations[lang].advicePlaceholder[riskKey];
+
+    // For moderate risk, add extra advice if only chest pain or only fast breathing is Yes
+    if (riskKey === "moderate") {
+        // Normalize answers for chest pain and fast breathing
+        const ansChestPain = normalizeAnswer(screeningAnswers.chest_pain);
+        const ansFastBreathing = normalizeAnswer(screeningAnswers.fast_breathing);
+        const onlyChestPain = isYes(ansChestPain) && !isYes(ansFastBreathing);
+        const onlyFastBreathing = !isYes(ansChestPain) && isYes(ansFastBreathing);
+        if (onlyChestPain || onlyFastBreathing) {
+            advice += lang === "fil"
+                ? " Ang pananakit ng dibdib o mabilis na paghinga ay maaaring dulot ng ibang kondisyon; magpakonsulta sa klinika para sa pagsusuri."
+                : " Chest pain or fast breathing can have other causes; see clinician for evaluation.";
+        }
+    }
+
+    document.getElementById('advice-text').textContent = advice;
+
+    // Update steps text in the selected language
+    document.getElementById('steps-text').innerHTML = translations[lang].steps[riskKey];
+
+    // Update gauge needle
+    let score = 0;
+    if (result.riskLevel === "Low Rate") score = 26;
+    else if (result.riskLevel === "Moderate Rate") score = 50;
+    else if (result.riskLevel === "High Rate") score = 74;
+    document.getElementById('gaugeNeedle').style.setProperty('--score', score);
+
+    // Show translated answers
+    displayAnswers();
+}
+
+function displayAnswers() {
+    const lang = document.getElementById("languageSelect").value;
+    const t = translations[lang];
+    const answerMapping = {
+        'age': 'answer-age',
+        'gender': 'answer-gender',
+        'unwell_days': 'answer-unwell-days',
+        'cough': 'answer-cough',
+        'cough_duration': 'answer-cough-duration',
+        'phlegm': 'answer-phlegm',
+        'fever': 'answer-fever',
+        'chills': 'answer-chills',
+        'breathing_difficulty': 'answer-breathing-difficulty',
+        'chest_pain': 'answer-chest-pain',
+        'fast_breathing': 'answer-fast-breathing',
+        'weakness': 'answer-weakness',
+        'appetite_loss': 'answer-appetite-loss',
+        'nausea': 'answer-nausea',
+        'child_feeding': 'answer-child-feeding',
+        'child_breathing': 'answer-child-breathing',
+        'recent_illness': 'answer-recent-illness',
+        'smoking': 'answer-smoking',
+        'vaccination': 'answer-vaccination',
+        'chronic-illness': 'answer-chronic-illness',
+        'fast-breathing-age': 'answer-fast-breathing-age'
+    };
+
+    // Get the order of keys as in your questions list
+    const keysOrder = Object.keys(answerMapping);
+
+        keysOrder.forEach((key, i) => {
+        const elementId = answerMapping[key];
+        const element = document.getElementById(elementId);
+        if (element && screeningAnswers[key]) {
+            element.textContent = translateAnswer(screeningAnswers[key], i, lang);
+        }
+    });
+}
+
+        function handleFileAttachment(event) {
+            const file = event.target.files[0];
+            if (file) {
+                attachedFile = file;
+                document.getElementById('file-name').textContent = file.name;
+                document.getElementById('attached-file').style.display = 'flex';
+            }
+        }
+
+        function removeFile() {
+            attachedFile = null;
+            document.getElementById('file-input').value = '';
+            document.getElementById('attached-file').style.display = 'none';
+        }
+
+        function saveResultLocally() {
+            const resultData = {
+                timestamp: new Date().toLocaleString(),
+                riskLevel: riskLevel,
+                adviceText: adviceText,
+                answers: screeningAnswers,
+                fileName: attachedFile ? attachedFile.name : null
+            };
+
+            // Create a comprehensive result document
+            const resultDocument = `
+            PNEUMONIA SCREENING RESULT
+            Generated: ${resultData.timestamp}
+
+            RISK ASSESSMENT: ${resultData.riskLevel}
+            ADVICE: ${resultData.adviceText}
+
+            SCREENING ANSWERS:
+${Object.keys(screeningAnswers).map(key => {
+    const questionMap = {
+        'age': 'How old are you?',
+        'gender': 'What is your sex/gender?',
+        'unwell_days': 'How many days have you been feeling unwell?',
+        'cough': 'Do you have a cough?',
+        'cough_duration': 'How long have you had this cough?',
+        'phlegm': 'Are you coughing up phlegm or thick mucus?',
+        'fever': 'Do you have a fever?',
+        'chills': 'Have you experienced chills or sweating?',
+        'breathing_difficulty': 'Are you having difficulty breathing or do you feel short of breath?',
+        'chest_pain': 'Do you have chest pain when breathing deeply or coughing?',
+        'fast_breathing': 'Is your breathing faster than usual?',
+        'weakness': 'Do you feel weak or extremely tired?',
+        'appetite_loss': 'Have you lost your appetite in the past few days?',
+        'nausea': 'Have you experienced nausea or dizziness?',
+        'child_feeding': 'Is the child feeding poorly or refusing food/milk?',
+        'child_breathing': 'Is the child breathing rapidly or does the chest pull inward when breathing?',
+        'recent_illness': 'Have you recently been sick with flu, colds, or any respiratory illness?',
+        'smoking': 'Do you smoke or live with someone who smokes?',
+        'vaccination': 'Have you been vaccinated against pneumonia (such as PCV or flu vaccine)?',
+        'chronic-illness': 'Do you have any chronic illnesses (asthma, heart disease, diabetes, weak immune system, or malnutrition)?',
+        'fast-breathing': 'Do you have fast breathing for your age? (Parents can count breaths for 1 minute. 2–11 months: ≥50/min, 12–59 months: ≥40/min, ≥5 years/adults: ≥30/min (approx.))'
+    };
+    const question = questionMap[key] || key;
+    return `${question}: ${screeningAnswers[key]}`;
+}).join('\n')}
+
+            ${attachedFile ? `\nAttached file: ${attachedFile.name}` : ''}
+
+            ---
+            This screening tool is for informational purposes only and does not replace professional medical advice.
+                        `;
+
+            // Create and download the file
+            const blob = new Blob([resultDocument], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pneumonia_screening_result_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Also save to localStorage
+            localStorage.setItem('latestScreeningResult', JSON.stringify(resultData));
+
+            resultSaved = true;
+            alert('Result saved successfully!');
+        }
+
+        function exitResult() {
+            if (resultSaved) {
+                // If result is saved, proceed directly to exit
+                window.location.href = 'index.html';
+            } else {
+                // If result is not saved, ask for confirmation
+                document.getElementById('exit-modal').style.display = 'flex';
+            }
+        }
+
+        function confirmExit() {
+            // Clear screening data and return to home
+            localStorage.removeItem('screeningAnswers');
+            window.location.href = 'index.html';
+        }
+
+        function cancelExit() {
+            document.getElementById('exit-modal').style.display = 'none';
+            pendingNavigationUrl = null;
+        }
+
+         function printLeftHalf() {
+            document.body.setAttribute("data-print-time", new Date().toLocaleString());
+            window.print();
+        }
+        
+
+    const translations = {
+    en: {
+        riskLevel: "Risk Level",
+        steps: {
+            no: `
+                <b>No Risk Pneumonia</b>
+                <b>If you feel severe shortness of breath, bluish lips, inability to drink, or convulsions — go to the emergency department immediately.</b>
+            `,
+            low: `
+                <b>Low Risk Pneumonia</b><br>
+                <b>Here are recommended actions you can do at home if you have a low risk of pneumonia:</b>
+                <ul>
+                    <li>Drink enough water – This helps keep phlegm moist and soft, making it easier to expel.</li>
+                    <li>Get enough rest – Give your body time to strengthen its immune system.</li>
+                    <li>Eat nutritious food – Make sure to include vegetables, fruits, protein, and vitamins to boost your immune system.</li>
+                    <li>Avoid smoking and smoke exposure – These harm your lungs and weaken your respiratory health.</li>
+                    <li>Keep your environment clean – Clean your home, wipe away dust, and avoid excessive cold or smoke indoors.</li>
+                    <li>Take prescribed medicines if your doctor advised – Follow your doctor’s instructions and don’t stop medication abruptly.</li>
+                    <li>Consult a doctor immediately if symptoms worsen – If your fever rises, you have difficulty breathing, or chest pain increases, see a doctor or go to the hospital right away.</li>
+                </ul>
+                <b>If you feel severe shortness of breath, bluish lips, inability to drink, or convulsions — go to the emergency department immediately.</b>
+            `,
+            moderate: `
+                <b>Mild Risk Pneumonia</b><br>
+                <b>General Steps</b>
+                <ul>
+                    <li>Plan a doctor’s visit within 1–2 days – even if symptoms seem manageable.</li>
+                    <li>Keep track of symptoms – note when fever started, changes in breathing, and energy levels.</li>
+                    <li>Be alert for danger signs – if new severe symptoms appear, treat them as High Risk immediately.</li>
+                </ul>
+                <b>At-Home Care</b>
+                <ul>
+                    <li>Rest and hydration – encourage fluids (water, soup, milk for children).</li>
+                    <li>Fever management – use paracetamol or other doctor-approved medicine, dress lightly, and sponge with lukewarm water if needed.</li>
+                    <li>Nutritious food – small frequent meals to keep strength.</li>
+                    <li>No smoking nearby – avoid exposure to cigarette smoke or cooking fumes.</li>
+                    <li>Breathing comfort – let the patient sit upright, not flat on the back, especially when coughing.</li>
+                    <li>Re-check regularly – measure temperature and observe breathing every few hours.</li>
+                </ul>
+                <b>If you feel severe shortness of breath, bluish lips, inability to drink, or convulsions — go to the emergency department immediately.</b>
+            `,
+            high: `
+                <b>High Risk Pneumonia</b><br>
+                <b>General Steps</b>
+                <ul>
+                    <li>Seek medical help immediately – Call an ambulance, local emergency hotline, or arrange transport to the nearest health facility.</li>
+                    <li>Do not wait for symptoms to improve on their own – pneumonia can worsen quickly.</li>
+                    <li>Inform a family member or neighbor – so someone can assist in case your condition worsens.</li>
+                </ul>
+                <b>At-Home Support (While Waiting for Help)</b>
+                <ul>
+                    <li>Keep the patient upright (sitting or propped up with pillows) to make breathing easier.</li>
+                    <li>Ensure fresh air – open windows if safe, avoid smoke/dust.</li>
+                    <li>Keep warm but not overheated – cover with a light blanket if cold.</li>
+                    <li>Encourage small sips of water if the patient can drink safely.</li>
+                    <li>If fever is high, you may give doctor-approved fever medicine (like paracetamol).</li>
+                    <li>Monitor breathing – if it becomes very slow, irregular, or stops → start basic first aid (if trained) and call for emergency help immediately.</li>
+                </ul>
+                <b>If you feel severe shortness of breath, bluish lips, inability to drink, or convulsions — go to the emergency department immediately.</b>
+            `
+        },
+        advicePlaceholder: {
+            no: "No concerning symptoms. No action required beyond usual care. Re-evaluate if new symptoms appear.",
+            low: "You currently have a low risk of pneumonia. Monitor your symptoms.",
+            moderate: "You may have symptoms of pneumonia. Please consult a health worker soon.",
+            high: "You are showing signs of pneumonia. Seek medical attention immediately."
+        },
+        questions: [
+            "How old are you?",
+            "What is your sex/gender?",
+            "How many days have you been feeling unwell?",
+            "Do you have a cough?",
+            "How long have you had this cough?",
+            "Are you coughing up phlegm or thick mucus?",
+            "Do you have a fever?",
+            "Have you experienced chills or sweating?",
+            "Are you having difficulty breathing or do you feel short of breath?",
+            "Do you have chest pain when breathing deeply or coughing?",
+            "Is your breathing faster than usual?",
+            "Do you feel weak or extremely tired?",
+            "Have you lost your appetite in the past few days?",
+            "Have you experienced nausea or dizziness?",
+            "(For children) Is the child feeding poorly or refusing food/milk?",
+            "(For children) Is the child breathing rapidly or does the chest pull inward when breathing?",
+            "Have you recently been sick with flu, colds, or any respiratory illness?",
+            "Do you smoke or live with someone who smokes?",
+            "Have you been vaccinated against pneumonia (such as PCV or flu vaccine)?",
+            "Do you have any chronic illnesses (asthma, heart disease, diabetes, weak immune system, or malnutrition)?",
+            "Do you have fast breathing for your age?",
+        ],
+        options: [
+            [], // 1
+            ["Male", "Female"], // 2
+            [], // 3
+            ["Yes", "No"], // 4
+            ["Less than 3 days", "3-7 days", "More than a week"], // 5
+            ["Yes", "No"], // 6
+            ["Yes", "No"], // 7
+            ["Yes", "No"], // 8
+            ["Yes", "No"], // 9
+            ["Yes", "No"], // 10
+            ["Yes", "No"], // 11
+            ["Yes", "No"], // 12
+            ["Yes", "No"], // 13
+            ["Yes", "No"], // 14
+            ["Yes", "No"], // 15
+            ["Yes", "No"], // 16
+            ["Yes", "No"], // 17
+            ["Yes", "No"], // 18
+            ["Yes", "No"], // 19
+            ["Yes", "No"], // 20
+            ["Yes", "No"]  // 21
+        ],
+        buttons: {
+            print: "Print",
+            attach: "Attach file with the result (Optional)",
+            save: "Save Result to local storage",
+            exit: "Exit"
+        },
+        disclaimer: "Disclaimer: This screening tool is for informational purposes only and does not replace professional medical advice.",
+        exitMessage: "Do you want to leave without saving your result?",
+        modalYes: "Yes",
+        modalNo: "No"
+    },
+    fil: {
+        riskLevel: "Risk Level",
+        steps: {
+        no: `
+            <b>Walang Panganib ng Pulmonya</b>
+            <b>Walang nakikitang nakababahalang sintomas. Walang kinakailangang aksyon maliban sa karaniwang pag-aalaga. Magpatingin muli kung may maranasang bagong sintomas.</b>
+        `,
+        low: `
+            <b>Mababang Panganib ng Pulmonya</b><br>
+            <b>Narito ang mga maaaring gawin na rekomendasyon kung mayroon kang mababang panganib (low risk) ng Pneumonia na kayang gawin sa bahay:</b>
+            <ul>
+                <li>Uminom ng sapat na tubig – Nakakatulong ito para manatiling basa at malambot ang plema at mas madaling mailabas.</li>
+                <li>Magpahinga nang sapat – Bigyan ng oras ang katawan upang lumakas ang resistensya.</li>
+                <li>Kumain ng masustansyang pagkain – Siguraduhin na may gulay, prutas, protina, at bitamina para palakasin ang immune system.</li>
+                <li>Iwasan ang paninigarilyo at usok – Nakakasama ito sa baga at nagpapahina sa kalusugan ng paghinga.</li>
+                <li>Panatilihing malinis ang kapaligiran – Maglinis ng bahay, punasan ang alikabok, at iwasan ang sobrang lamig o usok sa loob ng bahay.</li>
+                <li>Uminom ng gamot kung may ini-reseta ang doktor – Sundin nang tama ang payo ng doktor at huwag basta huminto sa gamot.</li>
+                <li>Kumonsulta agad kung lumala ang sintomas – Kung tumaas ang lagnat, nahihirapang huminga, o lumakas ang pananakit ng dibdib, agad magpatingin sa doktor o pumunta sa ospital.</li>
+            </ul>
+            <b>Kung makaranas ng matinding hirap sa paghinga, pamumutla o pamumula ng labi, kawalan ng kakayahang uminom, o kombulsyon — agad pumunta sa emergency department.</b>
+        `,
+        moderate: `
+            <b>Katamtamang Panganib ng Pulmonya</b><br>
+            <b>Mga Hakbang Medikal:</b>
+            <ul>
+                <li>Magpatingin sa doktor sa loob ng 1–2 araw (o teleconsult kung meron).</li>
+                <li>Ilista ang sintomas – kailan nagsimula ang lagnat, ubo, at pagbabago sa paghinga.</li>
+                <li>Magbantay – kapag lumabas ang malubhang sintomas, ituring na High Risk agad.</li>
+            </ul>
+            <b>Mga Hakbang sa Bahay:</b>
+            <ul>
+                <li>Magpahinga at uminom ng maraming tubig (sabaw, gatas, tubig).</li>
+                <li>Kontrolin ang lagnat – paracetamol kung pinayagan ng doktor, manipis na damit, at pamunas ng maligamgam na tubig.</li>
+                <li>Kumain ng masustansya kahit kaunti pero madalas.</li>
+                <li>Iwasan ang usok ng sigarilyo o pagluluto.</li>
+                <li>Paupuin nang nakataas ang ulo para mas madali huminga.</li>
+                <li>Sukatin at obserbahan ang temperatura at paghinga kada ilang oras.</li>
+            </ul>
+            <b>Kung makaranas ng matinding hirap sa paghinga, pamumutla o pamumula ng labi, kawalan ng kakayahang uminom, o kombulsyon — agad pumunta sa emergency department.</b>
+        `,
+        high: `
+            <b>Mataas na Panganib ng Pulmonya</b><br>
+            <b>Mga Hakbang Medikal:</b>
+            <ul>
+                <li>Tumawag agad ng tulong – sa ambulance, barangay health center, o emergency hotline.</li>
+                <li>Huwag maghintay – pwedeng lumala bigla ang pneumonia.</li>
+                <li>Sabihan ang kasama sa bahay o kapitbahay – para may makaalalay.</li>
+            </ul>
+            <b>Mga Hakbang sa Bahay:</b>
+            <ul>
+                <li>Paupuin o pahigain nang nakaangat ang ulo para mas madali ang paghinga.</li>
+                <li>Panatilihing presko ang hangin – buksan ang bintana kung ligtas.</li>
+                <li>Takpan ng kumot o banig kung giniginaw, pero huwag masyadong mainit.</li>
+                <li>Bigyan ng kaunting tubig kung kaya pang uminom.</li>
+                <li>Kung may lagnat, pwedeng bigyan ng paracetamol (ayon sa payo ng doktor).</li>
+                <li><b>Bantayan ang paghinga</b> – kung bumagal o huminto, tumawag ulit ng emergency at magbigay ng unang lunas kung marunong.</li>
+            </ul>
+            <b>Kung makaranas ng matinding hirap sa paghinga, pamumutla o pamumula ng labi, kawalan ng kakayahang uminom, o kombulsyon — agad pumunta sa emergency department.</b>
+        `
+    },
+        advicePlaceholder: {
+            no: "Walang nakitang sintomas na dapat ikabahala. Hindi kailangan ng aksyon maliban sa karaniwang pag-aalaga. Muling suriin kung may bagong sintomas.",
+            low: "Mababa ang iyong panganib sa pulmonya. Bantayan ang iyong mga sintomas.",
+            moderate: "Maaaring mayroon kang sintomas ng pulmonya. Kumonsulta sa health worker sa lalong madaling panahon.",
+            high: "Mayroon kang palatandaan ng pulmonya. Agad na magpakonsulta sa doktor."
+        },
+        questions: [
+            "Ilang taon ka na?",
+            "Ano ang iyong kasarian?",
+            "Ilang araw ka nang hindi maganda ang pakiramdam?",
+            "May ubo ka ba?",
+            "Gaano na katagal ang ubo mo?",
+            "Umuubo ka ba ng plema o malapot na sipon?",
+            "May lagnat ka ba?",
+            "Naranasan mo ba ang panginginig o pagpapawis?",
+            "Nahihirapan ka bang huminga o hinihingal ka ba?",
+            "Masakit ba ang dibdib mo kapag humihinga nang malalim o umuubo?",
+            "Mas mabilis ba kaysa dati ang paghinga mo?",
+            "Mahina ka ba o sobra ang pagkapagod mo?",
+            "Nawala ba ang gana mo sa pagkain nitong mga nakaraang araw?",
+            "Naranasan mo ba ang pagsusuka o pagkahilo?",
+            "(Para sa bata) Mahina ba siyang sumuso o tumatanggi sa pagkain?",
+            "(Para sa bata) Mabilis ba ang paghinga niya o humihila ang dibdib papasok kapag humihinga?",
+            "Nagkasakit ka ba kamakailan ng trangkaso, sipon, o anumang sakit sa paghinga?",
+            "Ikaw ba ay naninigarilyo o nakatira kasama ng naninigarilyo?",
+            "Nabakunahan ka na ba laban sa pulmonya (tulad ng PCV o bakuna laban sa trangkaso)?",
+            "Mayroon ka bang mga chronic illnesses?",
+            "Mayroon ka bang mabilis na paghinga para sa iyong edad?"
+        ],
+    options: [
+        [], // 1
+        ["Lalaki", "Babae"], // 2
+        [], // 3
+        ["Oo", "Hindi"], // 4
+        ["Mababa sa 3 araw", "3-7 araw", "Higit sa isang linggo"], // 5
+        ["Oo", "Hindi"], // 6
+        ["Oo", "Hindi"], // 7
+        ["Oo", "Hindi"], // 8
+        ["Oo", "Hindi"], // 9
+        ["Oo", "Hindi"], // 10
+        ["Oo", "Hindi"], // 11
+        ["Oo", "Hindi"], // 12
+        ["Oo", "Hindi"], // 13
+        ["Oo", "Hindi"], // 14
+        ["Oo", "Hindi"], // 15
+        ["Oo", "Hindi"], // 16
+        ["Oo", "Hindi"], // 17
+        ["Oo", "Hindi"], // 18
+        ["Oo", "Hindi"], // 19
+        ["Oo", "Hindi"], // 20
+        ["Oo", "Hindi"]  // 21
+    ],
+        buttons: {
+            print: "I-print",
+            attach: "Ikabit ang file ng resulta (Opsyonal)",
+            save: "I-save ang Resulta sa lokal na imbakan",
+            exit: "Lumabas"
+        },
+        disclaimer: "Paalala: Ang tool na ito ay para lamang sa impormasyon at hindi kapalit ng propesyonal na payong medikal.",
+        exitMessage: "Gusto mo bang umalis nang hindi sine-save ang resulta?",
+        modalYes: "Oo",
+        modalNo: "Hindi"
+    }
+};
+
+function translateAnswer(answer, questionIndex, lang) {
+    if (!answer) return answer;
+    answer = answer.trim();
+
+    // For question 5 (index 4), handle translation robustly
+    if (questionIndex === 4) {
+        // English to Filipino
+        if (lang === "fil") {
+            if (answer.toLowerCase() === "Less than 3 days") return "Mababa sa tatlong araw";
+            if (answer.toLowerCase() === "3-7 days") return "Tatlo hanggang pitong araw";
+            if (answer.toLowerCase() === "More than a week") return "Mahigit sa isang linggo";
+        } else {
+            // Filipino to English
+            if (answer.toLowerCase() === "Mababa sa tatlong araw") return "Less than 3 days";
+            if (answer.toLowerCase() === "Tatlo hanggang pitong araw") return "3-7 days";
+            if (answer.toLowerCase() === "Mahigit sa isang linggo") return "More than a week";
+        }
+    }
+
+    // Generic yes/no translation
+    if (lang === "fil") {
+        if (answer.toLowerCase() === "yes") return "Oo";
+        if (answer.toLowerCase() === "no") return "Hindi";
+    } else {
+        if (answer.toLowerCase() === "oo") return "Yes";
+        if (answer.toLowerCase() === "hindi") return "No";
+    }
+
+    // Generic options translation (for other questions)
+    const enOptions = translations.en.options[questionIndex] || [];
+    const filOptions = translations.fil.options[questionIndex] || [];
+    if (lang === "fil") {
+        const idx = enOptions.findIndex(opt => opt.toLowerCase() === answer.toLowerCase());
+        if (idx !== -1) return filOptions[idx] || answer;
+    } else {
+        const idx = filOptions.findIndex(opt => opt.toLowerCase() === answer.toLowerCase());
+        if (idx !== -1) return enOptions[idx] || answer;
+    }
+
+    return answer;
+}
+
+function updateTranslations(lang) {
+    const t = translations[lang];
+
+    // Update risk level header
+    document.querySelector(".risk-bottom h2").textContent = t.riskLevel;
+
+    // Update questions list
+    const questionTexts = document.querySelectorAll(".question-text");
+    questionTexts.forEach((el, i) => {
+        el.textContent = t.questions[i];
+    });
+
+    // Update steps text based on risk level
+    let riskKey = "";
+    const riskText = document.getElementById('print-risk-level').textContent.trim();
+    if (riskText === "HIGH RISK") riskKey = "high";
+    else if (riskText === "MODERATE RISK") riskKey = "moderate";
+    else if (riskText === "LOW RISK") riskKey = "low";
+    else riskKey = "no";
+    document.getElementById("steps-text").innerHTML = t.steps[riskKey];
+
+    // --- Update advice text in selected language ---
+    let advice = t.advicePlaceholder[riskKey];
+    if (riskKey === "moderate") {
+        const ansChestPain = normalizeAnswer(screeningAnswers.chest_pain);
+        const ansFastBreathing = normalizeAnswer(screeningAnswers.fast_breathing);
+        const onlyChestPain = isYes(ansChestPain) && !isYes(ansFastBreathing);
+        const onlyFastBreathing = !isYes(ansChestPain) && isYes(ansFastBreathing);
+        if (onlyChestPain || onlyFastBreathing) {
+            advice += lang === "fil"
+                ? " Ang pananakit ng dibdib o mabilis na paghinga ay maaaring dulot ng ibang kondisyon; magpakonsulta sa klinika para sa pagsusuri."
+                : " Chest pain or fast breathing can have other causes; see clinician for evaluation.";
+        }
+    }
+    document.getElementById('advice-text').textContent = advice;
+    // ------------------------------------------------
+
+    // Update buttons
+    document.querySelector("#print-button").innerHTML = `<span class="btn-icon"><i class="fas fa-print"></i></span> ${t.buttons.print}`;
+    document.querySelector(".file-btn").innerHTML = `<span class="btn-icon"><i class="fas fa-file-upload"></i></span> ${t.buttons.attach}`;
+    document.querySelector(".save-btn").innerHTML = `<span class="btn-icon"><i class="fas fa-save"></i></span> ${t.buttons.save}`;
+    document.querySelector(".exit-btn").innerHTML = `<span class="btn-icon"><i class="fas fa-sign-out-alt"></i></span> ${t.buttons.exit}`;
+
+    // Update disclaimer
+    document.querySelector(".disclaimer-box").innerHTML = `<strong>${t.disclaimer.split(":")[0]}:</strong> ${t.disclaimer.split(":").slice(1).join(":").trim()}`;
+
+    // Update modal text
+    document.getElementById("exit-message").textContent = t.exitMessage;
+    const modalBtns = document.querySelectorAll(".modal-btn");
+    if (modalBtns.length >= 2) {
+        modalBtns[0].textContent = t.modalYes;
+        modalBtns[1].textContent = t.modalNo;
+    }
+    displayAnswers();
+}
+
+document.getElementById("languageSelect").addEventListener("change", function (e) {
+    updateTranslations(e.target.value);
+});
+
+
+        // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+    const savedAnswers = localStorage.getItem('screeningAnswers');
+    if (savedAnswers) {
+        screeningAnswers = JSON.parse(savedAnswers);
+        displayResults();
+        // Apply initial translation (default English)
+        updateTranslations(document.getElementById("languageSelect").value);
+    } else {
+        alert('No screening data found. Please complete the screening first.');
+        window.location.href = 'screening.html';
+    }
+    document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        pendingNavigationUrl = this.getAttribute('href');
+        // Show the exit modal
+        document.getElementById('exit-modal').style.display = 'flex';
+    });
+});
+
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNEUMOweb - Pneumonia Screening</title>
+    <link rel="stylesheet" href="screening.css">
+</head>
+<div id="split-transition" class="split-transition-overlay">
+    <div class="split-left"></div>
+    <div class="split-right"></div>
+</div>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <nav class="navigation">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="pages.html?page=background" class="nav-link">Background</a>
+                <a href="pages.html?page=faq" class="nav-link">FAQ</a>
+                <a href="pages.html?page=feedback" class="nav-link">FEEDBACK</a>
+            </nav>
+            <div class="language-toggle">
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="fil">Filipino</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Title Section -->
+        <section class="title-section">
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="logo.png" alt="PNEUMOweb Logo" class="logo-img">   
+                </div>
+            </div>
+            <div class="title-content">
+                <h1 class="main-title">PNEUMOweb</h1>
+                <p class="subtitle">Web-based pneumonia screening system</p>
+            </div>
+        </section>
+
+        <!-- Body Section -->
+        <section class="body-section">
+            <!-- Screening Questions View -->
+            <div id="screening-view" class="screening-container">
+                <button class="exit-btn" onclick="exitScreening()">Exit</button>
+
+                <div class="category-header">
+                    <h2 id="category-title">Basic Information</h2>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-navigation">
+                        <button id="prev-btn" class="nav-btn" onclick="previousQuestion()" disabled>
+                            <span>&lt;</span>
+                        </button>
+
+                        <div class="question-content">
+                            <div class="question-number">
+                                <span>Question Number: </span><span id="current-question">1</span>/<span id="total-questions">21</span>
+                            </div>
+                            <div class="question-text" id="question-text">
+                                1. How old are you?
+                            </div>
+                            <div class="answer-options" id="answer-options">
+                                <input type="number" id="age-input" class="number-input" placeholder="0" min="0" max="120">
+                            </div>
+                        </div>
+
+                        <button id="next-btn" class="nav-btn" onclick="nextQuestion()">
+                            <span>&gt;</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="submit-container" id="submit-container" style="display: none;">
+                    <button id="submit-btn" class="submit-btn" onclick="submitAnswers()">Submit</button>
+                </div>
+
+            </div>
+
+            <!-- Summary View -->
+            <div id="summary-view" class="summary-container" style="display: none;">
+                <button class="exit-btn" onclick="exitScreening()">Exit</button>
+
+                <div class="category-header">
+                    <h2>Answer Summary </h2>
+                </div>
+
+                <div class="summary-content">
+                    <div class="summary-questions" id="summary-questions">
+                        <!-- Summary will be populated here -->
+                    </div>
+
+                    <div class="summary-actions">
+                        <button class="confirm-btn" onclick="proceedToResult()">Confirm</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="disclaimer-box">
+                <strong>Disclaimer:</strong>
+                    This screening tool is for informational purposes only and does not replace professional medical advice.
+            </div>
+            <div class="footer-background-placeholder">
+                <!-- Footer background image will be placed here -->
+            </div>
+        </footer>
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div id="exit-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p>Are you sure you want to leave?</p>
+            <div class="modal-buttons">
+                <button onclick="confirmExit()" class="modal-btn confirm">Yes</button>
+                <button onclick="cancelExit()" class="modal-btn cancel">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let isInSummaryMode = false;
+
+        const questions = [
+            // Basic Information
+            {
+                category: "Basic Information",
+                question: "1. How old are you?",
+                type: "number",
+                key: "age"
+            },
+            {
+                category: "Basic Information",
+                question: "2. What is your sex/gender?",
+                type: "choice",
+                options: ["Male", "Female"],
+                key: "gender"
+            },
+            {
+                category: "Basic Information",
+                question: "3. How many days have you been feeling unwell?",
+                type: "number",
+                key: "unwell_days"
+            },
+            // Primary Symptoms
+            {
+                category: "Primary Symptoms",
+                question: "4. Do you have a cough?",
+                type: "yesno",
+                key: "cough"
+            },
+            {
+                category: "Primary Symptoms",
+                question: "5. How long have you had this cough?",
+                type: "choice",
+                options: ["Less than 3 days", "3-7 days", "More than a week"],
+                key: "cough_duration"
+            },
+            {
+                category: "Primary Symptoms",
+                question: "6. Are you coughing up phlegm or thick mucus?",
+                type: "yesno",
+                key: "phlegm"
+            },
+            {
+                category: "Primary Symptoms",
+                question: "7. Do you have a fever?",
+                type: "yesno",
+                key: "fever"
+            },
+            {
+                category: "Primary Symptoms",
+                question: "8. Have you experienced chills or sweating?",
+                type: "yesno",
+                key: "chills"
+            },
+            // Breathing Symptoms
+            {
+                category: "Breathing Symptoms",
+                question: "9. Are you having difficulty breathing or short of breath?",
+                type: "yesno",
+                key: "breathing_difficulty"
+            },
+            {
+                category: "Breathing Symptoms",
+                question: "10. Do you have chest pain when breathing deeply or coughing?",
+                type: "yesno",
+                key: "chest_pain"
+            },
+            {
+                category: "Breathing Symptoms",
+                question: "11. Is your breathing faster than usual?",
+                type: "yesno",
+                key: "fast_breathing"
+            },
+            // General Condition
+            {
+                category: "General Condition",
+                question: "12. Do you feel weak or extremely tired?",
+                type: "yesno",
+                key: "weakness"
+            },
+            {
+                category: "General Condition",
+                question: "13. Have you lost your appetite in the past few days?",
+                type: "yesno",
+                key: "appetite_loss"
+            },
+            {
+                category: "General Condition",
+                question: "14. Have you experienced nausea or dizziness?",
+                type: "yesno",
+                key: "nausea"
+            },
+            // For Children (If Applicable)
+            {
+                category: "For Children (If Applicable)",
+                question: "15. Is the child feeding poorly or refusing food/milk?",
+                type: "yesno",
+                key: "child_feeding"
+            },
+            {
+                category: "For Children (If Applicable)",
+                question: "16.  Is the child breathing rapidly or does the chest pull inward when breathing?",
+                type: "yesno",
+                key: "child_breathing"
+            },
+            // Risk Factors
+            {
+                category: "Risk Factors",
+                question: "17. Have you recently been sick with flu, colds, or any respiratory illness?",
+                type: "yesno",
+                key: "recent_illness"
+            },
+            {
+                category: "Risk Factors",
+                question: "18. Do you smoke or live with someone who smokes?",
+                type: "yesno",
+                key: "smoking"
+            },
+            {
+                category: "Risk Factors",
+                question: "19. Have you been vaccinated against pneumonia (such as PCV or flu vaccine)?",
+                type: "yesno",
+                key: "vaccination"
+            },
+            {
+                category: "Risk Factors",
+                question: "20. Do you have any chronic illnesses (asthma, heart disease, diabetes, weak immune system, or malnutrition)?",
+                type: "yesno",
+                key: "chronic-illness"
+            },
+           {
+                category: "Risk Factors",
+                question: `21. Is your breathing fast based on your age? (Count breaths per minute)
+            <ul style="margin-top:0.5em;">
+            <li>2–11 months: ≥50/min</li>
+            <li>12–59 months: ≥40/min</li>
+            <li>≥5 years/adults: ≥30/min (approx.)</li>
+            </ul>`,
+                type: "yesno",
+                key: "fast-breathing-age"
+            },
+
+
+        ];
+
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+
+            // Update category
+            document.getElementById('category-title').textContent = question.category;
+
+            // Update question number and text
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-text').innerHTML = question.question;
+
+            // Create answer options
+            const optionsContainer = document.getElementById('answer-options');
+            optionsContainer.innerHTML = '';
+
+            if (question.type === 'yesno') {
+                // Use translated options for yes/no
+                const yesLabel = translations[currentLanguage].questions[currentQuestionIndex].options[0] || 'Yes';
+                const noLabel = translations[currentLanguage].questions[currentQuestionIndex].options[1] || 'No';
+                const yesBtn = createButton(yesLabel, () => selectAnswer(yesLabel));
+                const noBtn = createButton(noLabel, () => selectAnswer(noLabel));
+                optionsContainer.appendChild(yesBtn);
+                optionsContainer.appendChild(noBtn);
+            } else if (question.type === 'choice') {
+                question.options.forEach(option => {
+                    const btn = createButton(option, () => selectAnswer(option));
+                    optionsContainer.appendChild(btn);
+                });
+            } else if (question.type === 'number') {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'number-input';
+                input.placeholder = '0';
+                input.min = '0';
+                if (question.key === 'age') input.max = '120';
+                input.addEventListener('input', (e) => selectAnswer(e.target.value));
+                optionsContainer.appendChild(input);
+            }
+
+            if (question.key === "cough_duration" && (answers.cough === "No" || answers.cough === "Hindi")) {
+                answers.cough_duration = "Skipped";
+                const optionsContainer = document.getElementById('answer-options');
+                optionsContainer.innerHTML = '<span style="color:gray;">Skipped</span>';
+                updateNavigationButtons();
+                updateSubmitButton();
+                return;
+            }
+
+            // Highlight current answer if exists
+            highlightCurrentAnswer();
+
+            // Update navigation buttons
+            updateNavigationButtons();
+
+            // Show/hide submit button
+            updateSubmitButton();
+        }
+
+        function createButton(text, onClick) {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = text;
+            btn.onclick = onClick;
+            return btn;
+        }
+
+        function selectAnswer(value) {
+            const question = questions[currentQuestionIndex];
+            answers[question.key] = value;
+            highlightCurrentAnswer();
+            updateNavigationButtons();
+            updateSubmitButton();
+        }
+
+        function highlightCurrentAnswer() {
+    const question = questions[currentQuestionIndex];
+    let currentAnswer = answers[question.key];
+
+    // Translate the stored answer to the current language for comparison
+    if (question.type === 'yesno' || question.type === 'choice') {
+        const enOptions = translations.en.questions[currentQuestionIndex].options || [];
+        const filOptions = translations.fil.questions[currentQuestionIndex].options || [];
+        if (currentLanguage === 'fil') {
+            // If answer is in English, translate to Filipino
+            const idx = enOptions.indexOf(currentAnswer);
+            if (idx !== -1) currentAnswer = filOptions[idx];
+            if (currentAnswer === "Yes") currentAnswer = "Oo";
+            if (currentAnswer === "No") currentAnswer = "Hindi";
+        } else {
+            // If answer is in Filipino, translate to English
+            const idx = filOptions.indexOf(currentAnswer);
+            if (idx !== -1) currentAnswer = enOptions[idx];
+            if (currentAnswer === "Oo") currentAnswer = "Yes";
+            if (currentAnswer === "Hindi") currentAnswer = "No";
+        }
+    }
+
+    if (question.type === 'number') {
+        const input = document.querySelector('.number-input');
+        if (input && currentAnswer) {
+            input.value = currentAnswer;
+            input.style.backgroundColor = '#27ae60';
+            input.style.color = 'white';
+        }
+    } else {
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => {
+            if (btn.textContent === currentAnswer) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+}
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+
+            // Can only go forward if current question is answered
+            const question = questions[currentQuestionIndex];
+            const hasAnswer = answers[question.key] !== undefined && answers[question.key] !== '';
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'block';
+                nextBtn.disabled = !hasAnswer;
+                // Turn green if answered, default otherwise
+                if (hasAnswer) {
+                    nextBtn.style.backgroundColor = '#04a922'; // Green
+                    nextBtn.style.color = '#fff';
+                } else {
+                    nextBtn.style.backgroundColor = '';
+                    nextBtn.style.color = '';
+                }
+            }
+        }
+
+        function updateSubmitButton() {
+            const submitContainer = document.getElementById('submit-container');
+
+            if (currentQuestionIndex === questions.length - 1) {
+                // Check if all questions are answered
+                const allAnswered = questions.every(q => answers[q.key] !== undefined && answers[q.key] !== '');
+                submitContainer.style.display = allAnswered ? 'block' : 'none';
+            } else {
+                submitContainer.style.display = 'none';
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            const question = questions[currentQuestionIndex];
+            const hasAnswer = answers[question.key] !== undefined && answers[question.key] !== '';
+
+            if (hasAnswer && currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        function submitAnswers() {
+            showSummary();
+        }
+
+        function showSummary() {
+            isInSummaryMode = true;
+            document.getElementById('screening-view').style.display = 'none';
+            document.getElementById('summary-view').style.display = 'block';
+
+            const summaryContainer = document.getElementById('summary-questions');
+            summaryContainer.innerHTML = '';
+
+// ...inside showSummary()...
+questions.forEach((question, index) => {
+    let answer = answers[question.key];
+
+    // Translate answer for yesno/choice
+    if (question.type === 'yesno' || question.type === 'choice') {
+        const enOptions = translations.en.questions[index].options || [];
+        const filOptions = translations.fil.questions[index].options || [];
+        if (currentLanguage === 'fil') {
+            const idx = enOptions.indexOf(answer);
+            if (idx !== -1) answer = filOptions[idx];
+            if (answer === "Yes") answer = "Oo";
+            if (answer === "No") answer = "Hindi";
+        } else {
+            const idx = filOptions.indexOf(answer);
+            if (idx !== -1) answer = enOptions[idx];
+            if (answer === "Oo") answer = "Yes";
+            if (answer === "Hindi") answer = "No";
+        }
+    }
+
+    const summaryItem = document.createElement('div');
+    summaryItem.className = 'summary-item';
+
+    let answerInput = '';
+    if (question.type === 'number') {
+        answerInput = `<input type="number" value="${answers[question.key]}" min="0" max="${question.key === 'age' ? 120 : ''}" onchange="updateAnswer('${question.key}', this.value)">`;
+    } else if (question.type === 'yesno') {
+        const yesLabel = translations[currentLanguage].questions[index].options[0] || 'Yes';
+        const noLabel = translations[currentLanguage].questions[index].options[1] || 'No';
+        answerInput = `
+            <select onchange="updateAnswer('${question.key}', this.value)">
+                <option value="${yesLabel}" ${answer === yesLabel ? 'selected' : ''}>${yesLabel}</option>
+                <option value="${noLabel}" ${answer === noLabel ? 'selected' : ''}>${noLabel}</option>
+            </select>
+        `;
+    } else if (question.type === 'choice') {
+        // For question 5, add "Skipped" as an option if cough is No/Hindi
+        if (question.key === "cough_duration" && (answers.cough === "No" || answers.cough === "Hindi")) {
+            let options = [...question.options, "Skipped"];
+            answerInput = `
+                <select onchange="updateAnswer('${question.key}', this.value)">
+                    ${options.map(opt => `<option value="${opt}" ${answer === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                </select>
+            `;
+        } else {
+            answerInput = `
+                <select onchange="updateAnswer('${question.key}', this.value)">
+                    ${question.options.map(opt => `<option value="${opt}" ${answer === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                </select>
+            `;
+        }
+    }
+
+    summaryItem.innerHTML = `
+        <div class="summary-question">${question.question}</div>
+        <div class="summary-answer">
+            ${answerInput}
+        </div>
+    `;
+    summaryContainer.appendChild(summaryItem);
+});        }        function updateAnswer(key, value) {
+            answers[key] = value;
+        }
+
+        function proceedToResult() {
+            // Save answers to localStorage
+            localStorage.setItem('screeningAnswers', JSON.stringify(answers));
+            window.location.href = 'result.html';
+        }
+
+        function exitScreening() {
+            pendingNavigationUrl = "index.html";
+            document.getElementById('exit-modal').style.display = 'flex';
+        }
+
+        function confirmExit() {
+            localStorage.removeItem('screeningAnswers');
+            window.location.href = 'index.html';
+        }
+
+        function cancelExit() {
+            document.getElementById('exit-modal').style.display = 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            displayQuestion();
+        });
+
+        const translations = {
+        en: {
+            questions: [
+            {
+                question: "1. How old are you?",
+                options: []
+            },
+            {
+                question: "2. What is your sex/gender?",
+                options: ["Male", "Female"]
+            },
+
+            {
+                question: "3. How many days have you been feeling unwell",
+                options: []
+            },
+            {
+                question: "4. Do you have a cough?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "5. How long have you had this cough?",
+                options: ["Less than 3 days", "3-7 days", "More than a week"]
+            },            
+            {
+                question: "6. Are you coughing up phlegm or thick mucus?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "7. Do you have a fever?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "8. Have you experienced chills or sweating?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "9. Are you having difficulty breathing or do you feel short of breath?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "10. Do you have chest pain when breathing deeply or coughing?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "11. Is your breathing faster than usual?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "12. Do you feel weak or extremely tired?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "13. Have you lost your appetite in the past few days?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "14. Have you experienced nausea or vomiting?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "15. Is the child feeding poorly or refusing  food/milk?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "16.  Is the child breathing rapidly or does the chest pull inward when breathing?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "17. Have you been sick with flu, cold, or a respiratory illness?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "18. Do you smoke or live with someone who smokes?",
+                options: ["Yes", "No"]
+            },            
+            {
+                question: "19. Have you been vaccinated against pneumonia (such as PCV or flu vaccine)?",
+                options: ["Yes", "No"]
+            },
+            {
+                question: "20. Do you have any chronic illnesses (asthma, heart disease, diabetes, weak immune system, or malnutrition)?",
+                options: ["Yes", "No"]
+            },
+            {
+                question: `21. Is your breathing fast based on your age? (Count breaths per minute)
+            <ul style="margin-top:0.5em;">
+            <li>2–11 months: ≥50/min</li>
+            <li>12–59 months: ≥40/min</li>
+            <li>≥5 years/adults: ≥30/min (approx.)</li>
+            </ul>`,
+                options: ["Yes", "No"]
+            },
+
+            ],
+            disclaimer: "This screening tool is for informational purposes only and does not replace professional medical advice."
+        },
+        fil: {
+            questions: [
+            {
+                question: "1. Ilang taon ka na?",
+                options: []
+            },
+            {
+                question: "2. Ano ang iyong kasarian?",
+                options: ["Lalaki", "Babae"]
+            },
+            {
+                question: "3. Ilang araw ka nang hindi maganda ang pakiramdam?",
+                options: []
+            },
+            {
+                question: "4. May ubo ka ba?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "5. Gaano na katagal ang ubo mo?",
+                options: ["Mababa sa tatlong araw", "Tatlo hanggang pitong araw", "Mahigit sa isang linggo"]
+            },
+            {
+                question: "6. Umuubo ka ba ng plema o malapot na sipon?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "7. May lagnat ka ba?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "8. Naranasan mo ba ang panginginig o pagpapawis?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "9. Nahihirapan ka bang huminga o hinihingal ka ba?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "10. Masakit ba ang dibdib mo kapag humihinga nang malalim o umuubo?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "11. Mas mabilis ba kaysa dati ang paghinga mo?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "12. Mahina ka ba o sobra ang pagkapagod mo?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "13. Nawala ba ang gana mo sa pagkain nitong mga nakaraang araw?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "14. Naranasan mo ba ang pagsusuka o pagkahilo?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "15. (Para sa bata) Mahina ba siyang sumuso o tumatanggi sa pagkain?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "16. (Para sa bata) Mabilis ba ang paghinga niya o humihila ang dibdib papasok kapag humihinga?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "17. Nagkasakit ka ba kamakailan ng trangkaso, sipon, o anumang sakit sa paghinga?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "18. Ikaw ba ay naninigarilyo o nakatira kasama ng naninigarilyo?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "19. Nabakunahan ka na ba laban sa pulmonya (tulad ng PCV o bakuna laban sa trangkaso)?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: "20. Mayroon ka bang malalang karamdaman (hika, sakit sa puso, diabetes, mahina ang resistensya, o malnutrisyon)?",
+                options: ["Oo", "Hindi"]
+            },
+            {
+                question: `21. Mabilis ba ang paghinga mo batay sa iyong edad? (Maaaring bilangin ng magulang ang paghinga ng bata sa loob ng 1 minuto.)
+            <ul style="margin-top:0.5em;">
+            <li>Edad 2–11 buwan: ≥50 beses kada minuto</li>
+            <li>Edad 12–59 buwan: ≥40 beses kada minuto</li>
+            <li>≥5 taon/matatanda: ≥30 beses kada minuto (tinatayang bilang)</li>
+            </ul>`,
+                options: ["Oo", "Hindi"]
+            }
+            ],
+            disclaimer: "Paalala: Ang tool na ito ay para lamang sa impormasyon at hindi kapalit ng propesyonal na payong medikal."
+        }
+        };
+
+        let currentLanguage = 'en';
+
+        document.getElementById('languageSelect').addEventListener('change', function(e) {
+        currentLanguage = e.target.value;
+        updateTranslations();
+        });
+
+        function updateTranslations() {
+        questions.forEach((q, i) => {
+            q.question = translations[currentLanguage].questions[i].question;
+            if (translations[currentLanguage].questions[i].options.length) {
+            q.options = translations[currentLanguage].questions[i].options;
+            }
+        });
+        document.querySelector('.disclaimer-box').innerHTML = `<strong>${currentLanguage === "en" ? "Disclaimer:" : "Paalala:"}</strong> ${translations[currentLanguage].disclaimer}`;
+        // Re-render current question or summary
+        if (isInSummaryMode) {
+            showSummary();
+        } else {
+            displayQuestion();
+            highlightCurrentAnswer();
+        }
+
+        let pendingNavigationUrl = null;
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                pendingNavigationUrl = this.getAttribute('href');
+                document.getElementById('exit-modal').style.display = 'flex';
+            });
+        });
+    }
+
+        function confirmExit() {
+            localStorage.removeItem('screeningAnswers');
+            if (pendingNavigationUrl) {
+                window.location.href = pendingNavigationUrl;
+            }
+        }
+
+        function cancelExit() {
+            document.getElementById('exit-modal').style.display = 'none';
+            pendingNavigationUrl = null;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start split animation
+            setTimeout(() => {
+                document.getElementById('split-transition').classList.add('split');
+            }, 100); // allow DOM to render
+
+            // After animation, hide overlay
+            setTimeout(() => {
+                document.getElementById('split-transition').style.display = 'none';
+            }, 3500); // matches 2.5s animation
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNEUMOweb - Web-based pneumonia screening system</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <nav class="navigation">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="pages.html?page=background" class="nav-link">Background</a>
+                <a href="pages.html?page=faq" class="nav-link">FAQ</a>
+                <a href="pages.html?page=feedback" class="nav-link">FEEDBACK</a>
+            </nav>
+            <div class="language-toggle">
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="fil">Filipino</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Title Section -->
+        <section class="title-section">
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                  <img src="logo.png" alt="PNEUMOweb Logo" class="logo-img">   
+                </div>
+            </div>
+            <div class="title-content">
+                <h1 class="main-title">PNEUMOweb</h1>
+                <p class="subtitle">Web-based pneumonia screening system</p>
+            </div>
+        </section>
+
+        <!-- Body Section -->
+        <section class="body-section">
+            <div class="carousel-container">
+                <div class="carousel-slide active" data-index="0">
+                    <div class="slide-content">
+                        <p>Welcome to PNEUMOweb - A comprehensive pneumonia screening system designed to help assess your risk factors and symptoms.</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-index="1">
+                    <div class="slide-content">
+                        <p>Our screening process consists of 19 carefully designed questions covering basic information, symptoms, and risk factors to provide accurate assessment.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-slide" data-index="2">
+                    <div class="slide-content">
+                        <p>Get instant results with risk level assessment (Low, Moderate, or High) and personalized recommendations based on your responses.</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-index="3">
+                    <div class="slide-content">
+                        <p>Your privacy is important to us. All screening data is processed locally and can be saved securely to your device.</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-index="4">
+                    <div class="slide-content">
+                        <p>Remember: This tool is for screening purposes only. Always consult with a healthcare professional for proper medical diagnosis and treatment.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="start-screening-btn" onclick="window.location.href='screening.html'">
+                START SCREENING
+            </button>
+            <!-- Background image placeholder -->
+        </section>
+
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="disclaimer-box">
+                <strong>Disclaimer:</strong>
+                    This screening tool is for informational purposes only and does not replace professional medical advice. Please consult a healthcare professional for proper diagnosis and treatment.
+            </div>
+            <!-- Footer background image placeholder -->
+            <div class="footer-background-placeholder">
+                <!-- Footer background image will be placed here -->
+            </div>
+        </footer>
+    </div>
+    <div id="split-transition" class="split-transition-overlay" style="display: none;">
+        <div class="split-left"></div>
+        <div class="split-right"></div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slideInterval;
+        let isHovered = false;
+        let isRotating = true;
+        let isTransitioning = false;
+
+        const slides = document.querySelectorAll('.carousel-slide');
+        const totalSlides = slides.length;
+
+        // Debug function to track state
+        function logState(action) {
+            console.log(`[${action}] currentSlide: ${currentSlide}, isRotating: ${isRotating}, isTransitioning: ${isTransitioning}, isHovered: ${isHovered}`);
+        }
+
+        const translations = {
+            en: {
+                nav: ["Home", "Background", "FAQ", "FEEDBACK"],
+                mainTitle: "PNEUMOweb",
+                subtitle: "Web-based pneumonia screening system",
+                carousel: [
+                    "Welcome to PNEUMOweb - A comprehensive pneumonia screening system designed to help assess your risk factors and symptoms.",
+                    "Our screening process consists of 19 carefully designed questions covering basic information, symptoms, and risk factors to provide accurate assessment.",
+                    "Get instant results with risk level assessment (Low, Moderate, or High) and personalized recommendations based on your responses.",
+                    "Your privacy is important to us. All screening data is processed locally and can be saved securely to your device.",
+                    "Remember: This tool is for screening purposes only. Always consult with a healthcare professional for proper medical diagnosis and treatment."
+                ],
+                startBtn: "START SCREENING",
+                disclaimer: "This screening tool is for informational purposes only and does not replace professional medical advice. Please consult a healthcare professional for proper diagnosis and treatment."
+            },
+            fil: {
+                nav: ["Bahay", "Background", "Mga Tanong", "Feedback"],
+                mainTitle: "PNEUMOweb",
+                subtitle: "Web-based na sistema para sa pagsusuri ng pulmonya",
+                carousel: [
+                    "Maligayang pagdating sa PNEUMOweb - Isang komprehensibong sistema para sa pagsusuri ng panganib at sintomas ng pulmonya.",
+                    "Ang aming proseso ng pagsusuri ay binubuo ng 19 na maingat na dinisenyong tanong tungkol sa impormasyon, sintomas, at mga risk factor para sa mas tumpak na pagsusuri.",
+                    "Makakakuha ka ng instant na resulta ng antas ng panganib (Mababa, Katamtaman, o Mataas) at mga personalisadong rekomendasyon batay sa iyong mga sagot.",
+                    "Mahalaga sa amin ang iyong privacy. Ang lahat ng datos ay pinoproseso lamang sa iyong device at maaaring i-save nang ligtas.",
+                    "Paalala: Ang tool na ito ay para lamang sa screening. Kumonsulta pa rin sa doktor para sa tamang medikal na diagnosis at gamutan."
+                ],
+                startBtn: "SIMULAN ANG SCREENING",
+                disclaimer: "Ang tool na ito ay para lamang sa impormasyon at hindi kapalit ng propesyonal na payong medikal. Kumonsulta sa doktor para sa tamang diagnosis at gamutan."
+            }
+        };
+
+        function translateIndexPage(lang) {
+            // Main title only
+            document.querySelector('.main-title').textContent = translations[lang].mainTitle;
+
+            // Carousel slides
+            const slides = document.querySelectorAll('.carousel-slide .slide-content p');
+            translations[lang].carousel.forEach((text, i) => {
+                if (slides[i]) slides[i].textContent = text;
+            });
+
+            // Start button
+            document.querySelector('.start-screening-btn').textContent = translations[lang].startBtn;
+
+            // Disclaimer
+            document.querySelector('.disclaimer-box').innerHTML = `<strong>${lang === "en" ? "Disclaimer:" : "Paunawa:"}</strong> ${translations[lang].disclaimer}`;
+        }
+        
+        function updateSlidePositions() {
+            slides.forEach((slide, index) => {
+                // Clear all position classes first
+                slide.classList.remove('center', 'left-1', 'left-2', 'right-1', 'right-2');
+
+                // Calculate relative position from current center
+                let position = (index - currentSlide + totalSlides) % totalSlides;
+
+                // Apply position classes based on relative position
+                switch(position) {
+                    case 0:
+                        slide.classList.add('center');
+                        break;
+                    case 1:
+                        slide.classList.add('right-1');
+                        break;
+                    case 2:
+                        slide.classList.add('right-2');
+                        break;
+                    case 3:
+                        slide.classList.add('left-2');
+                        break;
+                    case 4:
+                        slide.classList.add('left-1');
+                        break;
+                }
+            });
+        }
+
+        function nextSlide() {
+            if (!isRotating || isTransitioning) return;
+
+            isTransitioning = true;
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlidePositions();
+            logState('nextSlide');
+
+            // Allow transitions to complete
+            setTimeout(() => {
+                isTransitioning = false;
+                logState('nextSlide-complete');
+            }, 700);
+        }
+
+        function startRotation() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 4000);
+        }
+
+        function stopRotation() {
+            clearInterval(slideInterval);
+        }
+
+        function moveToCenter(targetIndex) {
+            if (isTransitioning || targetIndex === currentSlide) return;
+
+            console.log('Moving slide', targetIndex, 'to center');
+            isTransitioning = true;
+            stopRotation();
+            isRotating = false;
+
+            currentSlide = targetIndex;
+            updateSlidePositions();
+            logState('moveToCenter');
+
+            // Reset transition state after animation completes (shorter delay)
+            setTimeout(() => {
+                isTransitioning = false;
+                logState('moveToCenter-transitionComplete');
+                console.log('Transition complete, ready for new interactions');
+            }, 700);
+
+            // Resume auto-rotation after 5 seconds (only if not being hovered)
+            setTimeout(() => {
+                if (!isHovered && !isTransitioning) {
+                    isRotating = true;
+                    startRotation();
+                    logState('moveToCenter-autoRotationResumed');
+                    console.log('Auto-rotation resumed');
+                }
+            }, 5000);
+        }
+
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            translateIndexPage(document.getElementById('languageSelect').value);
+            updateSlidePositions();
+            startRotation();
+
+            // Add event listeners
+            slides.forEach((slide, index) => {
+                // Hover effects for center slide only
+                slide.addEventListener('mouseenter', () => {
+                    if (slide.classList.contains('center') && !isTransitioning) {
+                        isHovered = true;
+                        stopRotation();
+                    }
+                });
+
+                slide.addEventListener('mouseleave', () => {
+                    if (slide.classList.contains('center') && !isTransitioning) {
+                        isHovered = false;
+                        // Only restart if auto-rotation is enabled and not manually paused
+                        if (isRotating && !isTransitioning) {
+                            startRotation();
+                        }
+                    }
+                });
+
+                // Click to move to center
+                slide.addEventListener('click', () => {
+                    console.log('Slide clicked:', index, 'isCenter:', slide.classList.contains('center'), 'isTransitioning:', isTransitioning, 'currentSlide:', currentSlide);
+
+                    if (!slide.classList.contains('center') && !isTransitioning) {
+                        moveToCenter(index);
+                    } else if (isTransitioning) {
+                        console.log('Click ignored - transition in progress');
+                    } else if (slide.classList.contains('center')) {
+                        console.log('Click ignored - slide is already center');
+                    }
+                });
+            });
+
+            // Language toggle functionality
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                const selectedLang = this.value;
+                translateIndexPage(selectedLang);
+            });
+        });
+
+        // Prevent issues on window resize
+        window.addEventListener('resize', () => {
+            if (!isTransitioning) {
+                setTimeout(updateSlidePositions, 100);
+            }
+        });
+    </script>
+</body>
+</html>
